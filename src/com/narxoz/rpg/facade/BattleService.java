@@ -15,23 +15,45 @@ public class BattleService {
     }
 
     public AdventureResult battle(HeroProfile hero, BossEnemy boss, AttackAction action) {
-        // TODO: Implement the battle flow.
-        // Questions to answer:
-        // - Who attacks first?
-        // - How many rounds are allowed?
-        // - How is damage resolved?
-        // - How will randomness affect the result, if at all?
-        AdventureResult result = new AdventureResult();
-        result.setWinner("TODO");
-        result.setRounds(0);
-        result.setReward("TODO");
-        result.addLine("TODO: implement battle logic");
+        AdventureResult result=new AdventureResult();
+        int rounds=0;
+        result.addLine("battle begin");
+        result.addLine(hero.getName()+"(HP:"+hero.getHealth()+")VS"+boss.getName()+"(HP:"+boss.getHealth()+")");
 
-        // Keep the field in use so students can decide whether to rely on it.
-        if (random.nextInt(1) == 0) {
-            // TODO: Replace placeholder branch with real deterministic or random logic.
+        while (hero.isAlive() && boss.isAlive()){
+            rounds++;
+            result.addLine("\n--- Round "+rounds+" ---");
+
+            int heroDamage = action.getDamage();
+            boss.takeDamage(heroDamage);
+            result.addLine(hero.getName()+" attacks with "+action.getActionName());
+            result.addLine("It deals "+heroDamage+" damage. "+boss.getName()+"has"+boss.getHealth() + " HP left.");
+
+            if(!boss.isAlive()){
+                result.addLine(boss.getName()+"is defeated");
+                break;
+            }
+            int randomBonus = random.nextInt(5);
+            int bossDamage = boss.getAttackPower() + randomBonus;
+
+            hero.takeDamage(bossDamage);
+            result.addLine(boss.getName()+" strikes back for "+bossDamage+" damage");
+            result.addLine(hero.getName()+" has "+hero.getHealth()+" HP left.");
+
+            if(!hero.isAlive()){
+                result.addLine(hero.getName()+" collapses...");
+                break;
+            }
         }
+        result.setRounds(rounds);
 
+        if(hero.isAlive()){
+            result.setWinner("Hero");
+            result.addLine("\nhero wins");
+        }else{
+            result.setWinner("Boss");
+            result.addLine("\nboss wins");
+        }
         return result;
     }
 }
