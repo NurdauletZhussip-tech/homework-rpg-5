@@ -1,5 +1,5 @@
 package com.narxoz.rpg.decorator;
-
+// чекаем работают ли коммиты и пушы
 public abstract class ActionDecorator implements AttackAction {
     private final AttackAction wrappedAction;
 
